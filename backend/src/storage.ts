@@ -5,7 +5,7 @@ import path from "path"
 
 export const storage=multer.diskStorage({
     destination:function(req,file,cb){
-        const dir='./uploads/pdfs';
+        const dir='../uploads/pdfs';
         if(!fs.existsSync(dir)){
           fs.mkdirSync(dir,{recursive:true})
         }
@@ -18,7 +18,8 @@ export const storage=multer.diskStorage({
     }
 })
 
-const xmlstorage="./uploads/xml";
+export const xmlstorage = path.resolve(__dirname, "../uploads/xml");
+
 
 if(!fs.existsSync(xmlstorage)){
    fs.mkdirSync(xmlstorage,{recursive:true})
@@ -32,7 +33,9 @@ export const upload = multer({
         if (file.mimetype === 'application/pdf') {
             cb(null, true);
         } else {
-            cb(new Error('Only PDF files can be uploaded!'));
+            cb(null ,false);
         }
     }
 });
+
+
