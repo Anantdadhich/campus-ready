@@ -1,5 +1,9 @@
-export const Navbar=()=>{
+"use client"
 
+import { useRouter } from "next/navigation"
+
+export const Navbar=()=>{
+   const router=useRouter()
     return (
          <nav className="flex justify-between items-center py-4 ">
                     <div className="flex items-center">
@@ -14,7 +18,7 @@ export const Navbar=()=>{
                     
                     
                     
-                    <button  className="bg-gray-500 bg-opacity-60 hover:bg-opacity-80 text-white px-6 py-2 rounded-full transition-all duration-200 backdrop-blur-sm">
+                    <button onClick={()=>router.push("/auth/register")}  className="bg-gray-500 bg-opacity-60 hover:bg-opacity-80 text-white px-6 py-2 rounded-full transition-all duration-200 backdrop-blur-sm">
                       Sign in
                     </button>
                   </nav>
