@@ -12,7 +12,7 @@ export const pdfprocess=async (pdfpath:string,xmlpath:string,conversionId:string
       
 
         const pdfdata=await pdf(databuffer)
-        console.log("Processing file:", pdfpath);
+
 
         if (!fs.existsSync(pdfpath)) {
             console.error("File not found:", pdfpath);
@@ -57,7 +57,7 @@ export const pdfprocess=async (pdfpath:string,xmlpath:string,conversionId:string
             }
         });
 
-
+         
     } catch (error) {
         console.log(error)
         await prisma.conversion.update({

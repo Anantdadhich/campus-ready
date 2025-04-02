@@ -1,66 +1,74 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import type { File } from "@/types/index"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Button } from "@/components/ui/Button"
-import { Download } from "lucide-react"
-import axios from "axios"
+import { useState } from "react";
+import type { File } from "@/types/index";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Button } from "@/components/ui/Button";
+import { Download } from "lucide-react";
+import axios from "axios";
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+
 interface ConversionPreviewProps {
-  file: File
+  file: File;
 }
 
 export function ConversionPreview({ file }: ConversionPreviewProps) {
-  const [activeTab, setActiveTab] = useState<string>("xml")
-  const [xmlContent, setXmlContent] = useState<string | null>(null)
-  const [isLoading, setIsLoading] = useState(false)
+  const [activeTab, setActiveTab] = useState<string>("xml");
+  const [xmlContent, setXmlContent] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   // Fetch XML content from backend
   const fetchXmlContent = async () => {
-    if (xmlContent) return // Already fetched
+    if (xmlContent) return; // Already fetched
 
-    setIsLoading(true)
+    setIsLoading(true);
     try {
-      const response = await axios.get(`http://localhost:3001/api/conversions/${file.id}`)
-
-      if (!response) throw new Error("Failed to fetch XML content")
-
-      const data = await response.data
-      setXmlContent(data.content)
+      const response = await axios.get(`${API_URL}/api/conversions/${file.id}`, {
+        headers: { /* include auth headers if needed */ },
+      });
+      if (response.status !== 200 || !response.data || !response.data.xmlContent) {
+        throw new Error("Failed to fetch XML content");
+      }
+      setXmlContent(response.data.xmlContent);
     } catch (error) {
-      console.error("Error fetching XML content:", error)
+      console.error("Error fetching XML content:", error);
+      setXmlContent("Error loading XML.");
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   // Fetch content when tab changes to XML
   const handleTabChange = (value: string) => {
-    setActiveTab(value)
+    setActiveTab(value);
     if (value === "xml" || value === "split") {
-      fetchXmlContent()
+      fetchXmlContent();
     }
-  }
+  };
 
+  // Download the XML file
   const handleDownload = async () => {
     try {
-      const response = await fetch(`http://your-backend-url/api/files/${file.id}/download`)
+      const response = await axios.get(`${API_URL}/api/conversions/${file.id}/download`, {
+        responseType: "blob",
+        headers: { /* include auth headers if needed */ },
+      });
+      if (response.status !== 200) throw new Error("Download failed");
 
-      if (!response.ok) throw new Error("Download failed")
-
-      const blob = await response.blob()
-      const url = window.URL.createObjectURL(blob)
-      const a = document.createElement("a")
-      a.href = url
-      a.download = file.name.replace(".pdf", ".xml")
-      document.body.appendChild(a)
-      a.click()
-      window.URL.revokeObjectURL(url)
-      a.remove()
+      const blob = new Blob([response.data], { type: "application/xml" });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = file.name.replace(".pdf", ".xml");
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
     } catch (error) {
-      console.error("Download failed:", error)
+      console.error("Download failed:", error);
     }
-  }
+  };
 
   return (
     <div className="space-y-4">
@@ -72,6 +80,7 @@ export function ConversionPreview({ file }: ConversionPreviewProps) {
             <TabsTrigger value="split">Split View</TabsTrigger>
           </TabsList>
 
+          {/* XML Content */}
           <TabsContent value="xml" className="mt-4">
             <div className="relative rounded-md border bg-muted p-4">
               {isLoading ? (
@@ -86,21 +95,23 @@ export function ConversionPreview({ file }: ConversionPreviewProps) {
             </div>
           </TabsContent>
 
+          {/* PDF Preview */}
           <TabsContent value="pdf" className="mt-4">
             <div className="flex h-96 items-center justify-center rounded-md border bg-muted">
               <iframe
-                src={`http://your-backend-url/api/files/${file.id}/pdf-preview`}
+                src={`${API_URL}/api/conversions/${file.id}/pdf-preview`}
                 className="h-full w-full rounded-md"
                 title="PDF Preview"
               />
             </div>
           </TabsContent>
 
+          {/* Split View (Side-by-side XML & PDF) */}
           <TabsContent value="split" className="mt-4">
             <div className="grid grid-cols-2 gap-4">
               <div className="flex h-96 items-center justify-center rounded-md border bg-muted">
                 <iframe
-                  src={`http://your-backend-url/api/files/${file.id}/pdf-preview`}
+                  src={`${API_URL}/api/conversions/${file.id}/pdf-preview`}
                   className="h-full w-full rounded-md"
                   title="PDF Preview"
                 />
@@ -121,6 +132,7 @@ export function ConversionPreview({ file }: ConversionPreviewProps) {
         </Tabs>
       </div>
 
+      {/* Download Button */}
       <div className="flex justify-end space-x-2">
         <Button variant="outline" size="sm" onClick={handleDownload}>
           <Download className="mr-2 h-4 w-4" />
@@ -128,5 +140,5 @@ export function ConversionPreview({ file }: ConversionPreviewProps) {
         </Button>
       </div>
     </div>
-  )
+  );
 }

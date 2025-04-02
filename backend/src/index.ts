@@ -19,6 +19,11 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }));
 
 
+
+
+
+
+
 const PORT=process.env.PORT || 3001;
 
 
@@ -230,7 +235,7 @@ app.get("/api/conversions/:id/download",authmiddleware,async(req:ExpressRequest,
 
      if(!conversion){
 
-      res.status(403).json({ message: 'conversion not download' });
+      res.status(404).json({ message: 'conversion not download' });
       return
      }
     if(conversion.userId !== req.userId ){
@@ -238,7 +243,7 @@ app.get("/api/conversions/:id/download",authmiddleware,async(req:ExpressRequest,
       return
     }
 
-    if(conversion.status !== "COMPLETED"){
+    if(conversion.status !== "COMPLETED" || !conversion.xmlfileName){
       res.status(403).json({message:"coversion not completed "})
       return
     }
@@ -260,7 +265,13 @@ app.get("/api/conversions/:id/download",authmiddleware,async(req:ExpressRequest,
   }
  })
   
-  
+/*
+ res.setHeader("Content-Type", "application/xml");
+ res.setHeader("Content-Disposition", `attachment; filename="${originalName}.xml"`);
+ 
+ // Send XML content directly from the database
+ res.send(conversion.xmlfileName);
+  */
   
   } catch (error) {
       console.log(error)
@@ -334,4 +345,33 @@ app.delete("/api/conversions/:id",authmiddleware,async(req:ExpressRequest,res)=>
 app.listen(PORT,()=>{
   console.log(`server running on ${PORT}`)
 });
+
+app.get("/api/auth/user", authmiddleware, async (req: ExpressRequest, res) => {
+  try {
+    if (!req.userId) {
+      res.status(401).json({ message: "Unauthorized" });
+      return
+    }
+
+    const user = await prisma.user.findUnique({
+      where: { id: req.userId },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+      },
+    });
+
+    if (!user) {
+      res.status(404).json({ message: "User not found" });
+      return
+    }
+
+    res.status(200).json(user);
+  } catch (error) {
+    console.error("Error fetching user:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
 

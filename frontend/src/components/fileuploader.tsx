@@ -9,6 +9,7 @@ import type { File } from "@/types/index"
 import { v4 as uuidv4 } from "uuid"
 import { useToast } from "./ui/toastui"
 import { Button } from "./ui/Button"
+import { useAuth } from "./authcontext"
 
 
 interface FileUploaderProps {
@@ -20,7 +21,7 @@ export function FileUploader({ onFileUpload }: FileUploaderProps) {
   const [isUploading, setIsUploading] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const { toast } = useToast()
-
+ const {token}=useAuth()
 
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault()
@@ -93,17 +94,27 @@ export function FileUploader({ onFileUpload }: FileUploaderProps) {
     for (const file of newFiles) {
       try {
         const formData = new FormData()
+        if (!file.originalFile) {
+          console.error("File is missing");
+          return;
+        }
+
         formData.append("file", file.originalFile as globalThis.File)
 
-        // Send to your Node.js backend
-        const response = await axios.post("http://localhost:3001/api/upload")
+       
+        const response = await axios.post("http://localhost:3001/api/upload", formData, {
+          headers: {
+            Authorization: `Bearer ${token}`, 
+            "Content-Type": "multipart/form-data",
+          },
+        })
     
 
-        if (!response) {
+        if (response.status !== 200) {
           throw new Error("Conversion failed")
         }
 
-        // Update file status
+      
         file.status = "success"
         file.progress = 100
         onFileUpload([{ ...file }])

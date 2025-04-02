@@ -11,6 +11,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import Link from "next/link";
 import { Input } from "./ui/input";
 import { Button } from "./ui/Button";
+import { useAuth } from "./authcontext";
 
 const loginSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email" }),
@@ -19,6 +20,7 @@ const loginSchema = z.object({
 
 export const LoginForm = () => {
   const router = useRouter();
+  const {login}=useAuth()
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -37,6 +39,7 @@ export const LoginForm = () => {
       const response = await axios.post("http://localhost:3001/api/auth/login", values);
 
       if (response.status === 200) {
+        login(response.data.jwttoken)
         toast({
           title: "Login Successful",
           description: "Welcome back!",

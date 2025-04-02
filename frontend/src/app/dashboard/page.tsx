@@ -1,5 +1,6 @@
 
 import { DashboardPage } from "@/components/dashboard"
+import { ProtectedRoute } from "@/components/protectedroute"
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
@@ -8,6 +9,12 @@ export const metadata: Metadata = {
 }
 
 export default function Dashboard() {
-  return <DashboardPage />
+  return (
+   <ProtectedRoute>
+     <DashboardPage />
+   </ProtectedRoute>
+  )
+  
+
 }
 
