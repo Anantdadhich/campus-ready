@@ -31,9 +31,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${mainFont.variable} ${secondaryFont.variable} font-mainFont antialiased`}
-      ><AuthProvider>  {children}
+        className={`${mainFont.variable} ${secondaryFont.variable} font-mainFont antialiased `}
+      ><AuthProvider> 
+         {children}
        <Toaster></Toaster>
+       
        </AuthProvider>
       
       </body>

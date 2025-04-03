@@ -17,6 +17,7 @@ const app=express()
 app.use(express.json())
 //app.use(express.urlencoded({ extended: true }));
 
+app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 
 app.use(cors({
  
@@ -108,6 +109,36 @@ app.post("/api/auth/login",async(req,res)=>{
 
 })
 
+
+
+app.get("/api/auth/user", authmiddleware, async (req: ExpressRequest, res) => {
+  try {
+    if (!req.userId) {
+      res.status(401).json({ message: "Unauthorized" });
+      return
+    }
+
+    const user = await prisma.user.findUnique({
+      where: { id: req.userId },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+      },
+    });
+
+    if (!user) {
+      res.status(404).json({ message: "User not found" });
+      return
+    }
+
+    res.status(200).json(user);
+  } catch (error) {
+    console.error("Error fetching user:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
 //upload file route
 app.post("/api/upload",authmiddleware,upload.single('file'),async (req:ExpressRequest,res)=>{
         try {
@@ -119,7 +150,7 @@ app.post("/api/upload",authmiddleware,upload.single('file'),async (req:ExpressRe
           if (!req.userId) {
             res.status(403).json({ message: "Unauthorized" });
             return
-        }
+        } 
 
 
         const {  originalname,filename,path:filePath}=req.file;
@@ -138,7 +169,7 @@ app.post("/api/upload",authmiddleware,upload.single('file'),async (req:ExpressRe
             }
         })
          
-
+  
         pdfprocess(filePath,xmlfilepath,conversion.id);
 
         res.status(200).json({
@@ -205,7 +236,7 @@ app.get("/api/conversions/:id",authmiddleware,async (req:ExpressRequest,res)=>{
       let xmlContent='';
 
       if(conversion.status==="COMPLETED"){
-        const xmlpath=path.join(xmlstorage,path.basename(conversion.xmlfileName));
+        const xmlpath=path.join(xmlstorage,conversion.xmlfileName);
           try {
             xmlContent=await fs.promises.readFile(xmlpath,"utf-8")
           } catch (error) {
@@ -231,6 +262,8 @@ app.get("/api/conversions/:id",authmiddleware,async (req:ExpressRequest,res)=>{
    
 })
 
+
+
 app.get("/api/conversions/:id/download",authmiddleware,async(req:ExpressRequest,res)=>{
      try {
       const {id}=req.params;
@@ -247,12 +280,13 @@ app.get("/api/conversions/:id/download",authmiddleware,async(req:ExpressRequest,
       res.status(404).json({ message: 'conversion not download' });
       return
      }
+
     if(conversion.userId !== req.userId ){
       res.status(403).json({message:"forbidden"})
       return
     }
 
-    if(conversion.status !== "COMPLETED" || !conversion.xmlfileName){
+    if(conversion.status !== "COMPLETED"){
       res.status(403).json({message:"coversion not completed "})
       return
     }
@@ -288,7 +322,7 @@ app.get("/api/conversions/:id/download",authmiddleware,async(req:ExpressRequest,
  // Send XML content directly from the database
  res.send(conversion.xmlfileName);
   */
-
+ 
   } catch (error) {
       console.log(error)
       res.status(500).json({message:"server error not download  "})
@@ -296,10 +330,6 @@ app.get("/api/conversions/:id/download",authmiddleware,async(req:ExpressRequest,
      }
 
 })
-
-
-
-
 
 app.delete("/api/conversions/:id",authmiddleware,async(req:ExpressRequest,res)=>{
   try {
@@ -358,6 +388,46 @@ app.delete("/api/conversions/:id",authmiddleware,async(req:ExpressRequest,res)=>
 
 })
 
+app.get("/api/conversions/:id/preview", authmiddleware, async (req: ExpressRequest, res) => {
+  try {
+      const { id } = req.params;
+
+      const conversion = await prisma.conversion.findUnique({
+          where: { id },
+          select: { fileName: true, userId: true }
+      });
+
+      if (!conversion) {
+         res.status(404).json({ message: "Conversion not found" });
+         return
+      }
+
+      if (conversion.userId !== req.userId) {
+          res.status(403).json({ message: "Forbidden" });
+          return
+      }
+
+      const pdfPath = path.join(__dirname, "../uploads", "pdfs", conversion.fileName);
+
+      if (!fs.existsSync(pdfPath)) {
+          res.status(404).json({ message: "PDF file not found" });
+          return
+      }
+
+    
+      res.setHeader("Content-Type", "application/pdf");
+      res.setHeader("Content-Disposition", `inline; filename="${conversion.fileName}"`);
+
+   
+      const stream = fs.createReadStream(pdfPath);
+      stream.pipe(res);
+  } catch (error) {
+      console.error("Error in PDF preview:", error);
+      res.status(500).json({ message: "Server error" });
+  }
+});
+
+
 
 
 
@@ -365,32 +435,5 @@ app.listen(PORT,()=>{
   console.log(`server running on ${PORT}`)
 });
 
-app.get("/api/auth/user", authmiddleware, async (req: ExpressRequest, res) => {
-  try {
-    if (!req.userId) {
-      res.status(401).json({ message: "Unauthorized" });
-      return
-    }
-
-    const user = await prisma.user.findUnique({
-      where: { id: req.userId },
-      select: {
-        id: true,
-        name: true,
-        email: true,
-      },
-    });
-
-    if (!user) {
-      res.status(404).json({ message: "User not found" });
-      return
-    }
-
-    res.status(200).json(user);
-  } catch (error) {
-    console.error("Error fetching user:", error);
-    res.status(500).json({ message: "Server error" });
-  }
-});
 
 

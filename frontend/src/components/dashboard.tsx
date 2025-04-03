@@ -104,7 +104,6 @@ export function DashboardPage() {
     
      
 
-      {/* Main content */}
       <div className="relative z-10 container mx-auto p-4 lg:p-6">
         <div className="space-y-6 backdrop-blur-sm bg-white/5 p-4 lg:p-8 rounded-xl border border-white/10 shadow-xl mt-14 lg:mt-0">
           <div className="flex justify-between items-center">
@@ -254,29 +253,32 @@ export function DashboardPage() {
            
           </Tabs>
 
-          {selectedFile && selectedFile.status === "success" && (
-            <Card className="bg-white/10 border-white/20 backdrop-blur-sm text-white mt-6">
-              <CardHeader>
-                <div className="flex justify-between items-center">
-                  <div>
-                    <CardTitle className="text-white">Preview</CardTitle>
-                    <CardDescription className="text-blue-100/70">View the converted XML document.</CardDescription>
-                  </div>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setSelectedFile(null)}
-                    className="border-white/20 text-white hover:bg-white/10"
-                  >
-                    Close
-                  </Button>
-                </div>
-              </CardHeader>
-              <CardContent className="overflow-x-auto">
-                <ConversionPreview file={selectedFile} />
-              </CardContent>
-            </Card>
-          )}
+         
+{selectedFile && (
+  <Card className="bg-white/10 border-white/20 backdrop-blur-sm text-white mt-6">
+    <CardHeader>
+      <div className="flex justify-between items-center">
+        <div>
+          <CardTitle className="text-white">Document Preview</CardTitle>
+          <CardDescription className="text-blue-100/70">
+            View and download your converted document.
+          </CardDescription>
+        </div>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => setSelectedFile(null)}
+          className="border-white/20 text-white hover:bg-white/10"
+        >
+          Close
+        </Button>
+      </div>
+    </CardHeader>
+    <CardContent className="overflow-x-auto">
+      <ConversionPreview file={selectedFile} />
+    </CardContent>
+  </Card>
+)}
         </div>
       </div>
     </div>

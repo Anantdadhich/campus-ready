@@ -69,6 +69,4 @@ export const pdfprocess=async (pdfpath:string,xmlpath:string,conversionId:string
         throw error
     }
 }
-
-
-
+    

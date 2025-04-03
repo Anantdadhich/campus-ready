@@ -1,5 +1,5 @@
 
-import { DashboardPage } from "@/components/dashboard"
+import  {DashboardPage} from "@/components/dashboard"
 import { ProtectedRoute } from "@/components/protectedroute"
 
 
