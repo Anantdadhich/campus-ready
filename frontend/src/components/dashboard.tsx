@@ -82,7 +82,7 @@ export function DashboardPage() {
 
   return (
     <div className="relative min-h-screen bg-gradient-to-br from-blue-950 via-purple-900 to-blue-900">
-      {/* Background decorative elements */}
+     
       <div className="absolute top-40 right-40 h-64 w-64 rounded-full bg-white/5 blur-xl"></div>
       <div className="absolute -top-20 left-20 h-80 w-80 rounded-full bg-purple-500/10 blur-xl"></div>
       <div className="absolute bottom-20 left-1/4 h-96 w-96 rounded-full bg-blue-400/10 blur-xl"></div>

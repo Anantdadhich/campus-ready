@@ -60,17 +60,17 @@ Error Handling: Robust error handling and validation throughout the application.
 
 ## Setup Instructions
 1. Clone the Repository
- git clone https://github.com/Anantdadhich/campus-ready.git
- cd pdf2xml-converter
+ - git clone https://github.com/Anantdadhich/campus-ready.git
+ - cd pdf2xml-converter
 
 2. Install Dependencies
-Backend
-bash
+ Backend
+ bash
 
 - cd backend
 - npm install
 
-Frontend
+ Frontend
 bash
 
 - cd frontend
