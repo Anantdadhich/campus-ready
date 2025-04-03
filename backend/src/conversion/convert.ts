@@ -7,6 +7,11 @@ import { prisma } from "../db/db"
 
 
 export const pdfprocess=async (pdfpath:string,xmlpath:string,conversionId:string):Promise<void> =>{
+    if (!fs.existsSync(pdfpath)) {
+        console.error("File not found:", pdfpath);
+        return;
+    }
+   
     try {
         const databuffer=await fs.promises.readFile(pdfpath);
       
@@ -14,16 +19,13 @@ export const pdfprocess=async (pdfpath:string,xmlpath:string,conversionId:string
         const pdfdata=await pdf(databuffer)
 
 
-        if (!fs.existsSync(pdfpath)) {
-            console.error("File not found:", pdfpath);
-            return;
-        }
+       
 
         //xml structure
         const xmlobj={
             document:{
                 metadata:{
-                    title:path.basename(pdfpath),
+                    title:path.basename(pdfpath,'.pdf'),
                     pages:pdfdata.numpages,
                     createdAt:new Date().toISOString()
 
@@ -67,3 +69,6 @@ export const pdfprocess=async (pdfpath:string,xmlpath:string,conversionId:string
         throw error
     }
 }
+
+
+

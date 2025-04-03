@@ -5,7 +5,7 @@ import path from "path"
 
 export const storage=multer.diskStorage({
     destination:function(req,file,cb){
-        const dir='../uploads/pdfs';
+        const dir=path.resolve(__dirname,'../uploads/pdfs');
         if(!fs.existsSync(dir)){
           fs.mkdirSync(dir,{recursive:true})
         }

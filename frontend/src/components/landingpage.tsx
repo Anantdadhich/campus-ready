@@ -14,7 +14,7 @@ export function LandingPage() {
   }, [])
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-blue-950 via-purple-900 to-blue-900">
+    <div className="relative min-h-screen overflow-hidden  bg-gradient-to-br from-blue-950 via-purple-900 to-blue-900">
      
       <div className="absolute top-40 right-40 h-64 w-64 rounded-full bg-white/5 blur-xl"></div>
       <div className="absolute -top-20 left-20 h-80 w-80 rounded-full bg-purple-500/10 blur-xl"></div>
@@ -39,26 +39,39 @@ export function LandingPage() {
       <div className="absolute top-1/2 right-1/3 h-3 w-3 rounded-full bg-orange-400/70"></div>
       <div className="absolute bottom-1/3 right-1/2 h-2 w-2 rounded-full bg-white/70"></div>
 
-      <header className="container z-10 mx-auto px-4 py-6">
+     
+      <header className="container z-10 mx-auto px-4 py-4 md:py-6">
         <div className="flex items-center justify-between">
-          <div className="text-2xl font-bold text-white">
-        
-            Convo</div>
-         
-          <div className="flex gap-4">
-            <Button asChild variant="outline" className="text-white border-white/20 hover:bg-white/10 hover:text-white">
-              <Link href="/auth/login">Login</Link>
+          <div className="text-xl font-bold text-white md:text-2xl">
+            Convo
+          </div>
+          
+          <div className="flex  gap-2 sm:flex-row sm:gap-4">
+            <Button 
+              asChild 
+              variant="outline" 
+              className="text-white border-white/20 hover:bg-white/10 hover:text-white text-sm px-4 py-2 md:text-base md:px-6 md:py-2"
+            >
+              <Link href="/auth/login" className="w-full text-center">
+                Login
+              </Link>
             </Button>
-            <Button asChild className="rounded-full bg-white/20 px-8 text-white hover:bg-white/30">
-              <Link href="/auth/register">Get Started</Link>
+            <Button 
+              asChild 
+              className="rounded-full bg-white/20 px-4 py-2 text-white hover:bg-white/30 text-sm md:text-base md:px-8 md:py-2"
+            >
+              <Link href="/auth/register" className="w-full text-center">
+                Get Started
+              </Link>
             </Button>
           </div>
         </div>
       </header>
 
+
       <main className="container relative z-10 mx-auto px-4 py-12">
         <div className="mx-auto max-w-4xl text-center">
-          <h1 className="mb-4 text-5xl font-bold tracking-tight font-mono">
+          <h1 className="mb-4 text-5xl font-bold tracking-tight ">
             <span className="text-green-400">Convert your</span>
             <br />
             <span className="text-white">file easily</span>

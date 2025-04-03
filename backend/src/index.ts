@@ -13,13 +13,18 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const app=express()
-app.use(cors())
 
 app.use(express.json())
-app.use(express.urlencoded({ extended: true }));
+//app.use(express.urlencoded({ extended: true }));
 
 
-
+app.use(cors({
+ 
+  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], 
+  allowedHeaders: ['Content-Type', 'Authorization'],   
+  credentials: true 
+}));
 
 
 
@@ -137,7 +142,12 @@ app.post("/api/upload",authmiddleware,upload.single('file'),async (req:ExpressRe
         pdfprocess(filePath,xmlfilepath,conversion.id);
 
         res.status(200).json({
-          conversionid:conversion.id
+            message:"file uploaded",
+            conversion:{
+              id:conversion.id,
+              originalname,
+              status:"PENDING"
+            }
         })
 
 
@@ -221,7 +231,6 @@ app.get("/api/conversions/:id",authmiddleware,async (req:ExpressRequest,res)=>{
    
 })
 
-
 app.get("/api/conversions/:id/download",authmiddleware,async(req:ExpressRequest,res)=>{
      try {
       const {id}=req.params;
@@ -250,13 +259,18 @@ app.get("/api/conversions/:id/download",authmiddleware,async(req:ExpressRequest,
 
  const safexmlname=path.basename(conversion.xmlfileName);
  const xmlpath=path.join(xmlstorage,safexmlname)
-
+ 
+ if (!fs.existsSync(xmlpath)) {
+  console.error(` XML file not found at path: ${xmlpath} for conversion ${id}`);
+   res.status(404).json({ message: "conversion xml file not found " });
+   return
+}
 
  const originalName=path.parse(conversion.originalName).name;
 
  res.download(xmlpath,`${originalName}.xml`,(err)=>{
   if(err){
-    console.log(err);
+    console.log(`error during download stream ${xmlpath}`,err);
     if(!res.headersSent){
       res.status(404).json({
         message:"file no availabale"
@@ -265,6 +279,8 @@ app.get("/api/conversions/:id/download",authmiddleware,async(req:ExpressRequest,
   }
  })
   
+
+
 /*
  res.setHeader("Content-Type", "application/xml");
  res.setHeader("Content-Disposition", `attachment; filename="${originalName}.xml"`);
@@ -272,7 +288,7 @@ app.get("/api/conversions/:id/download",authmiddleware,async(req:ExpressRequest,
  // Send XML content directly from the database
  res.send(conversion.xmlfileName);
   */
-  
+
   } catch (error) {
       console.log(error)
       res.status(500).json({message:"server error not download  "})
@@ -280,6 +296,9 @@ app.get("/api/conversions/:id/download",authmiddleware,async(req:ExpressRequest,
      }
 
 })
+
+
+
 
 
 app.delete("/api/conversions/:id",authmiddleware,async(req:ExpressRequest,res)=>{

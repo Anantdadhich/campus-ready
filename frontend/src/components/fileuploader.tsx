@@ -11,6 +11,7 @@ import { useToast } from "./ui/toastui"
 import { Button } from "./ui/Button"
 import { useAuth } from "./authcontext"
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
 
 interface FileUploaderProps {
   onFileUpload: (files: File[]) => void
@@ -49,7 +50,7 @@ export function FileUploader({ onFileUpload }: FileUploaderProps) {
       processFiles(selectedFiles)
     }
   }
-
+   /*
   const processFiles = async (fileList: globalThis.File[]) => {
     // Validate files
     const pdfFiles = fileList.filter((file) => file.type === "application/pdf")
@@ -102,7 +103,7 @@ export function FileUploader({ onFileUpload }: FileUploaderProps) {
         formData.append("file", file.originalFile as globalThis.File)
 
        
-        const response = await axios.post("http://localhost:3001/api/upload", formData, {
+        const response = await axios.post(`${API_URL}/api/upload`, formData, {
           headers: {
             Authorization: `Bearer ${token}`, 
             "Content-Type": "multipart/form-data",
@@ -114,7 +115,7 @@ export function FileUploader({ onFileUpload }: FileUploaderProps) {
           throw new Error("Conversion failed")
         }
 
-      
+        file.id = response.data.conversionid;
         file.status = "success"
         file.progress = 100
         onFileUpload([{ ...file }])
@@ -138,7 +139,56 @@ export function FileUploader({ onFileUpload }: FileUploaderProps) {
 
     setIsUploading(false)
   }
+  */
+ // In FileUploader
+const processFiles = async (fileList: globalThis.File[]) => {
+  const pdfFiles = fileList.filter((file) => file.type === "application/pdf");
+  if (pdfFiles.length === 0) {
+    toast({ title: "Invalid file type", description: "Please upload PDF files only", variant: "destructive" });
+    return;
+  }
 
+  const newFiles: File[] = pdfFiles.map((file) => ({
+    id: uuidv4(),
+    name: file.name,
+    size: file.size,
+    type: file.type,
+    status: "uploading",
+    progress: 0,
+    originalFile: file,
+  }));
+
+  onFileUpload(newFiles);
+  setIsUploading(true);
+
+  for (const file of newFiles) {
+    try {
+      const formData = new FormData();
+      formData.append("file", file.originalFile as globalThis.File);
+
+      const response = await axios.post(`${API_URL}/api/upload`, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
+        withCredentials: true,
+      });
+
+      file.id = response.data.conversionid; // Update with backend ID
+      file.status = "success";
+      file.progress = 100;
+      onFileUpload([{ ...file }]);
+      toast({ title: "Conversion successful", description: `${file.name} has been converted to XML` });
+    } catch (error) {
+      file.status = "error";
+      file.progress = 0;
+      onFileUpload([{ ...file }]);
+      toast({ title: "Conversion failed", description: `Failed to convert ${file.name}`, variant: "destructive" });
+    }
+  }
+
+  setIsUploading(false);
+};
   const handleButtonClick = () => {
     fileInputRef.current?.click()
   }
