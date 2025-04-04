@@ -1,4 +1,4 @@
-# PDF-to-XML Converter (Campus ready Assingment)
+<img width="1470" alt="2" src="https://github.com/user-attachments/assets/0ba87418-6b95-4649-821a-da33e66c26b2" /># PDF-to-XML Converter (Campus ready Assingment)
 
 Welcome to **Convo**, a powerful full-stack web application that transforms your PDF files into structured XML with ease!.Built with a  Next.js frontend and  Node.js backend, it’s designed for seamless document conversion and a delightful user experience.
 
@@ -183,7 +183,22 @@ This project hits **Level 2 (Intermediate)** with flair:
   
 
 
- ![alt text](image.png)
- ![alt text](record.mov)
+ ![alt text](image.png) 
+ 
+
+ <img width="1470" alt="2" src="https://github.com/user-attachments/assets/2111e1a6-5411-40f7-9e7b-75c678d676a9" />
+
+ <img width="1470" alt="4" src="https://github.com/user-attachments/assets/a6b9d9dc-1d9c-4929-956d-ae373871dc42" />
+<img width="1470" alt="5" src="https://github.com/user-attachments/assets/51e0de17-ac82-4712-85f6-9e32b824ba1c" />
+  <img width="1470" alt="1" src="https://github.com/user-attachments/assets/ad199679-ef56-4414-84b5-0c09027c8a2a" /> 
+
+  you can aslo downlaod the record.mov to see compelete good solution project for reference the video given below
+  
+
+    
+
+https://github.com/user-attachments/assets/1b2b7ee2-7862-4114-a5cc-5c66b0b58391
+
+
 
 --- 
