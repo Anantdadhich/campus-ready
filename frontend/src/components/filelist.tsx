@@ -32,7 +32,7 @@ export function FileList({ files, onFileRemove, onFileView }: FileListProps) {
   const [downloadingFileId, setDownloadingFileId] = useState<string | null>(null);
   const [processingFileId, setProcessingFileId] = useState<string | null>(null);
   const { toast } = useToast();
-
+    
   const handleDownload = async (file: File) => {
     if (downloadingFileId === file.id) return;
     

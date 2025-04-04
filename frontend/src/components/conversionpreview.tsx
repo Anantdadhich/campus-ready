@@ -153,7 +153,7 @@ export function ConversionPreview({ file }: ConversionPreviewProps) {
       }
     };
   }, [activeTab, file?.id, token]);
-
+   /*
   const handleDownload = async (type: 'xml' | 'pdf' = 'xml') => {
     if (isDownloading) return;
     
@@ -165,9 +165,9 @@ export function ConversionPreview({ file }: ConversionPreviewProps) {
         throw new Error("Authentication token is missing");
       }
       
-      const endpoint =`${API_URL}/api/conversions/${file.id}/download`;
+    
       
-      const response = await axios.get(endpoint, {
+      const response = await axios.get(`${API_URL}/api/conversions/${file.id}/download`, {
         responseType: "blob",
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -236,7 +236,101 @@ export function ConversionPreview({ file }: ConversionPreviewProps) {
       setIsDownloading(false);
     }
   };
+*/
+const handleDownload = async (type: 'xml' | 'pdf' = 'xml') => {
+  if (isDownloading) return;
+  
+  try {
+    setIsDownloading(true);
+    setError(null);
+    
+    // Check if file object has valid properties
+    if (!file || !file.id) {
+      throw new Error("Invalid file information");
+    }
+    
+    if (!token) {
+      throw new Error("Authentication token is missing");
+    }
+    
+    const response = await axios.get(`${API_URL}/api/conversions/${file.id}/download?type=${type}`, {
+      responseType: "blob",
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+      withCredentials: true
+    });
 
+    if (response.status !== 200) {
+      throw new Error(`Server responded with ${response.status}`);
+    }
+    
+    const contentType = type === 'xml' ? 'application/xml' : 'application/pdf';
+    const extension = type === 'xml' ? '.xml' : '.pdf';
+    
+    // Default filename if name is missing
+    let filename = `download${extension}`;
+    
+    // Only try to use file.name if it exists
+    if (file.name) {
+      filename = file.name.replace(/\.(pdf|xml)$/i, extension);
+    }
+    
+    // Check for content-disposition header
+    const contentDisposition = response.headers['content-disposition'];
+    if (contentDisposition) {
+      const filenameMatch = contentDisposition.match(/filename="(.+)"/);
+      if (filenameMatch && filenameMatch[1]) {
+        filename = filenameMatch[1];
+      }
+    }
+    
+    const blob = new Blob([response.data], { type: contentType });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    
+    setTimeout(() => {
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+    }, 100);
+    
+    toast({
+      title: "Download Complete",
+      description: `${filename} has been downloaded successfully`,
+    });
+  } catch (error) {
+    console.error("Download error:", error);
+    
+    let errorMessage = "Download failed";
+    if (axios.isAxiosError(error)) {
+      if (error.response?.status === 401) {
+        errorMessage = "Please login again to download";
+      } else if (error.response?.status === 403) {
+        errorMessage = "You don't have download permission";
+      } else if (error.response?.status === 404) {
+        errorMessage = "File not found on server";
+      } else if (error.response?.data?.message) {
+        errorMessage = error.response.data.message;
+      }
+    } else if (error instanceof Error) {
+      errorMessage = error.message;
+    }
+    
+    setError(errorMessage);
+    
+    toast({
+      title: "Download Failed",
+      description: errorMessage,
+      variant: "destructive",
+    });
+  } finally {
+    setIsDownloading(false);
+  }
+};
   const handlePageChange = (direction: 'next' | 'prev') => {
     if (direction === 'next' && currentPage < totalPages) {
       setCurrentPage(prev => prev + 1);

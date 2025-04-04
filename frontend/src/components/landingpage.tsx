@@ -1,12 +1,10 @@
 "use client"
 
 import Link from "next/link"
-import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { Button } from "./ui/Button"
 
 export function LandingPage() {
-  const router = useRouter()
   const [isClient, setIsClient] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
 
@@ -23,7 +21,7 @@ export function LandingPage() {
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-blue-950 via-purple-900 to-blue-900">
-      {/* Background elements */}
+   
       <div className="absolute top-40 right-40 h-64 w-64 rounded-full bg-white/5 blur-xl"></div>
       <div className="absolute -top-20 left-20 h-80 w-80 rounded-full bg-purple-500/10 blur-xl"></div>
       <div className="absolute bottom-20 left-1/4 h-96 w-96 rounded-full bg-blue-400/10 blur-xl"></div>
@@ -53,7 +51,7 @@ export function LandingPage() {
                 <div className="h-0.5 w-0 bg-gradient-to-r from-green-400 to-blue-400 transition-all duration-300 group-hover:w-full"></div>
               </div>
               
-              {/* Desktop Navigation Links */}
+          
               <nav className="ml-10 hidden md:block">
                 <ul className="flex space-x-8">
                   <li>
@@ -104,7 +102,7 @@ export function LandingPage() {
 
           <div className="mx-auto mb-8 max-w-3xl">
             <div className="grid gap-8 md:grid-cols-3">
-              {/* Card 1 - Enhanced with better hover effects */}
+            
               <div className="group rounded-lg bg-white/5 p-6 backdrop-blur-sm border border-white/10 hover:border-green-400/40 transition-all duration-500 hover:bg-white/10 hover:shadow-lg hover:shadow-green-500/10 hover:-translate-y-1">
                 <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-green-500/20 group-hover:bg-green-500/30 transition-all duration-300 group-hover:scale-110">
                   <svg
@@ -126,7 +124,7 @@ export function LandingPage() {
                 <p className="text-blue-100/70 group-hover:text-blue-100/90 transition-colors">Easily upload your PDF documents through our intuitive interface.</p>
               </div>
 
-              {/* Card 2 */}
+              
               <div className="group rounded-lg bg-white/5 p-6 backdrop-blur-sm border border-white/10 hover:border-blue-400/40 transition-all duration-500 hover:bg-white/10 hover:shadow-lg hover:shadow-blue-500/10 hover:-translate-y-1">
                 <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-blue-500/20 group-hover:bg-blue-500/30 transition-all duration-300 group-hover:scale-110">
                   <svg
@@ -150,7 +148,7 @@ export function LandingPage() {
                 </p>
               </div>
 
-              {/* Card 3 */}
+       
               <div className="group rounded-lg bg-white/5 p-6 backdrop-blur-sm border border-white/10 hover:border-purple-400/40 transition-all duration-500 hover:bg-white/10 hover:shadow-lg hover:shadow-purple-500/10 hover:-translate-y-1">
                 <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-purple-500/20 group-hover:bg-purple-500/30 transition-all duration-300 group-hover:scale-110">
                   <svg

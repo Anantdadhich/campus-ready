@@ -1,90 +1,171 @@
-# PDF-to-XML Converter Web Application
+# PDF-to-XML Converter 
 
-A full-stack web application that allows users to upload PDF files, convert them to XML while preserving document structure, and manage their conversion history. The application includes user authentication, file upload, conversion functionality, and a user-friendly interface for previewing and downloading results.
+Welcome to **PDF-to-XML Converter**, a powerful full-stack web application that transforms your PDF files into structured XML with ease!.Built with a sleek Next.js frontend and a robust Node.js backend, it’s designed for seamless document conversion and a delightful user experience.
 
-### Features
-Level 2 (Intermediate Implementation)
-User Authentication: Secure login/registration system using JWT (JSON Web Tokens).
+##  Features
 
- File Upload: Upload PDF files with validation (max 10MB, PDF only).
+- **Secure Authentication**: Log in or register with confidence using JSON Web Tokens (JWT) for secure access.
+- **Effortless PDF Upload**: Drag-and-drop uploader with validation—10MB max, PDFs only!
+- **Conversion History**: Browse your past conversions, preview results, or delete them with a click.
+- **Real-Time Preview**: View your PDFs and their XML output side-by-side (conversion mocked for now, but ready to scale).
+- **Responsive Design**: A stunning UI with a sidebar for desktop and a toggleable menu for mobile.
+- **Quick Stats Dashboard**: See your total, pending, and completed conversions at a glance.
+- **Backend Power**: Converts PDFs to XML, stores files, and tracks everything in a PostgreSQL database.
 
- PDF-to-XML Conversion: Converts PDFs to XML, preserving basic structure (paragraphs, metadata).
+---
 
- Conversion History: View and manage past conversions with a sidebar navigation.
+##  Setup and Run Instructions
 
- Preview: Multi-tab preview of original PDF and converted XML content.
+### **Prerequisites**
+- **Node.js**: v18.x or higher
+- **npm**: v9.x or higher
+- **Git**: For cloning the repo
 
-Download: Download converted XML files with proper naming.
+### **Clone the Repository**
+```bash
+git clone https://github.com/Anantdadhich/campus-ready.git
+cd campus-ready
+```
 
-User Profile: Basic profile management (name, email).
+---
 
-Error Handling: Robust error handling and validation throughout the application.
+##  Project Structure
+```plaintext
+campus-ready/
+├── backend/           # Node.js + Express backend
+├── frontend/          # Next.js frontend
+└── README.md          # You’re reading it!
+```
 
-## Technical Stack
-### Frontend: 
-- Next.js (React framework)
+---
 
-- TypeScript
+## Backend Setup
 
-- Shadcn UI (for components like Button, Tabs, Progress)
+### **1. Navigate to Backend**
+```bash
+cd backend
+```
 
-- Axios (API requests)
+### **2. Install Dependencies**
+```bash
+npm install
+```
+Installs **express, multer, pdf-parse, xml2js, bcrypt, jsonwebtoken, cors, prisma,** and more.
 
-### Backend: 
-- Express.js (Node.js framework)
+### **3. Environment Variables**
+Create a `.env` file in `backend/`:
+```env
+PORT=3001
+JWT_SECRET=your-super-secret-key
+DATABASE_URL=postgresql://user:password@localhost:5432/campusready?schema=public
+FRONTEND_URL=http://localhost:3000
+```
 
-- TypeScript
+### **4. Set Up Prisma**
+Initialize your database:
+```bash
+npx prisma migrate dev --name init
+```
+This runs migrations to create tables like **User** and **Conversion**.
 
-- Prisma (ORM for database interactions)
+### **5. Run Backend**
+```bash
+npm start
+```
+Your backend will fire up at **http://localhost:3001**.
 
-- pdf-parse (PDF parsing)
+---
 
-- xml2js (XML generation)
+##  Frontend Setup
 
-- multer (file uploads)
+### **1. Navigate to Frontend**
+```bash
+cd frontend
+```
 
-- jsonwebtoken (JWT authentication)
+### **2. Install Dependencies**
+```bash
+npm install
+```
+Installs **Next.js, TypeScript, Shadcn UI, Lucide Icons,** and more.
 
-- bcrypt (password hashing)
+### **3. Environment Variables**
+Create a `.env.local` file in `frontend/`:
+```env
+NEXT_PUBLIC_API_URL=http://localhost:3001
+```
 
-- Database: PostgreSQL (configurable to - via Prisma)
+### **4. Run Frontend**
+```bash
+npm run dev
+```
+---
 
-## Prerequisites
-- Node.js: v18 or higher
+##  Running Both Backend & Frontend
+Open two terminal windows:
+- **Backend**:
+  ```bash
+  cd backend && npx tsc - b 
+  node dist/index.js
+  ```
+- **Frontend**:
+  ```bash
+  cd frontend && npm run dev
+  ```
+  
+---
 
-- npm: v9 or higher (or use yarn/pnpm)
+##  Technology Choices
 
-- PostgreSQL: A running instance (or adjust Prisma for another database)
+### **Frontend**
+- **Next.js**
+- **TypeScript**
+- **Shadcn UI**
 
-- Git: For cloning the repository
+### **Backend**
+- **Node.js**
+- **Express.js**
+- **PostgreSQL**
+- **Prisma ORM**
+- **Multer**
+- **pdf-parse**
+- **xml2js**
+- **bcrypt & jsonwebtoken**
 
-## Setup Instructions
-1. Clone the Repository
- - git clone https://github.com/Anantdadhich/campus-ready.git
- - cd pdf2xml-converter
+---
 
-2. Install Dependencies
- Backend
- bash
+##  Challenge Level Implemented
 
-- cd backend
-- npm install
+This project hits **Level 2 (Intermediate)** with flair:
+- **JWT Authentication**: Secure login/register via `useAuth` and token-based API calls.
+- **PDF-to-XML Conversion**: Fully implemented in the backend with `pdfprocess`, though preview is mocked in the frontend.
+- **History Management**: Fetches and displays conversions with view/delete options.
+- **UI Features**: Sidebar navigation, responsive design, and a stats dashboard.
 
- Frontend
-bash
+---
 
-- cd frontend
-- npm install
+##  Assumptions and Limitations
 
-3. Configure Environment Variables
-Backend
-Create a .env file in the backend directory:
+### **Assumptions**
+- PDFs are text-based (no complex layouts like tables or images yet).
+- Users are authenticated via JWT tokens from `/api/auth/login`.
+- Local filesystem (`uploads/`) is available for storage.
 
-- PORT=3001
- - JWT_PASSWORD=your-secret-key
-- DATABASE_URL=postgresql://user:password@localhost:5432/pdf2xml_db
-- FRONTEND_URL=http://localhost:3000
+### **Limitations**
+- **Preview**: Frontend shows mocked XML; real previews need integration with backend XML files.
+- **PDF Complexity**: Only handles basic text extraction, not advanced structures.
+- **Error Feedback**: Basic error messages;
 
+---
 
+##  Future Improvements
+- **Cloud Storage**: Move files to AWS S3 or similar for scalability.
+- **Admin Panel**: Add user management and conversion oversight .
+- **WebSockets**: Real-time status updates for conversions.
+- **Testing**: Unit tests with Jest for backend logic.
+- **UI Polish**: Better mobile optimization and error handling UX.
+- **O Auth**: for secure we use google oauth for authentication.
+
+---
 
 
