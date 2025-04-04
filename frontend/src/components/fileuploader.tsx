@@ -228,13 +228,13 @@ export function FileUploader({ onFileUpload }: FileUploaderProps) {
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
     >
-      <Upload className="mb-4 h-12 w-12 text-blue-100/60" />
+      <Upload className="mb-4 h-12 w-12 text-blue-100/60 hover:scale-110" />
       <h3 className="mb-2 text-lg font-medium text-white">Drag & Drop PDF file here</h3>
-      <p className="mb-4 text-sm text-blue-100/60">or</p>
+      <p className="mb-4 text-sm text-blue-100/60 hover:scale-105">or</p>
       <Button
         onClick={handleButtonClick}
         variant="secondary"
-        className="bg-blue-800/50 text-white hover:bg-blue-800/70"
+        className="bg-blue-800/50 text-white hover:bg-blue-800/70 hover:scale-110"
         disabled={isUploading}
       >
         <Paperclip className="mr-2 h-4 w-4" />

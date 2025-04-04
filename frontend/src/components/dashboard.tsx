@@ -10,6 +10,7 @@ import axios from "axios";
 import { ConversionPreview } from "@/components/conversionpreview";
 import { useAuth } from "./authcontext";
 import { Menu, X } from "lucide-react";
+import Backgroundeffectfordashbaord from "./Backgroundeffectfordashbaord";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
 
@@ -19,9 +20,10 @@ export function DashboardPage() {
   const [conversions, setConversions] = useState<File[]>([]);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [activeView, setActiveView] = useState<"convert" | "history">("convert");
-  const { user, token } = useAuth();
+  const { user, token,logout } = useAuth();
 
   useEffect(() => {
+    //we will fetch the data 
     const fetchConversions = async () => {
       try {
         const response = await axios.get(`${API_URL}/api/conversions`, {
@@ -34,7 +36,9 @@ export function DashboardPage() {
         console.error("Error fetching conversions:", error);
       }
     };
-    if (token) fetchConversions();
+    if (token) {
+      fetchConversions();
+    }
   }, [token]);
 
   useEffect(() => {
@@ -86,22 +90,9 @@ export function DashboardPage() {
   };
 
   return (
-    <div className="relative min-h-screen bg-gradient-to-br from-blue-950 via-purple-900 to-blue-900">
+    <div className="relative min-h-screen bg-gradient-to-br from-blue-950 via-purple-900 to-blue-900 overflow-hidden">
       {/* Background effects */}
-      <div className="absolute top-40 right-40 h-64 w-64 rounded-full bg-white/5 blur-xl"></div>
-      <div className="absolute -top-20 left-20 h-80 w-80 rounded-full bg-purple-500/10 blur-xl"></div>
-      <div className="absolute bottom-20 left-1/4 h-96 w-96 rounded-full bg-blue-400/10 blur-xl"></div>
-      <div className="absolute top-80 left-40 h-16 w-16 rounded-full bg-green-500/30 blur-sm"></div>
-      <div className="absolute bottom-40 right-1/4 h-8 w-8 rounded-full bg-red-500/40 blur-sm"></div>
-      <div className="absolute top-1/3 right-20 h-6 w-6 rounded-full bg-yellow-400/40 blur-sm"></div>
-      <div className="absolute -top-20 -left-20 h-40 w-40 rounded-full border border-blue-400/20"></div>
-      <div className="absolute top-1/3 right-1/4 h-60 w-60 rounded-full border border-blue-400/15"></div>
-      <div className="absolute bottom-1/4 left-60 h-80 w-80 rounded-full border border-purple-400/10"></div>
-      <div className="absolute top-0 right-0 h-full w-1/2 border-l border-blue-400/5 rounded-full transform translate-x-1/2"></div>
-      <div className="absolute bottom-0 left-0 h-3/4 w-3/4 border-t border-purple-400/5 rounded-full transform -translate-y-1/4"></div>
-      <div className="absolute top-1/4 left-1/4 h-2 w-2 rounded-full bg-green-400/80"></div>
-      <div className="absolute top-1/2 right-1/3 h-3 w-3 rounded-full bg-orange-400/70"></div>
-      <div className="absolute bottom-1/3 right-1/2 h-2 w-2 rounded-full bg-white/70"></div>
+        <Backgroundeffectfordashbaord></Backgroundeffectfordashbaord>
 
       <div className="relative z-10 flex h-screen">
         {/* Mobile sidebar toggle button */}
@@ -119,77 +110,91 @@ export function DashboardPage() {
         {/* Sidebar */}
         <div className={`fixed lg:relative w-64 h-full transition-all duration-300 ease-in-out z-40 
           ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
-          <div className="h-full backdrop-blur-sm bg-white/10 border-r border-white/10 p-4 space-y-6">
-            <div className="pt-10 lg:pt-4">
-              <h2 className="text-xl font-bold tracking-tight text-white">Dashboard</h2>
-              <p className="text-sm text-blue-100/80">
-                Welcome, {user?.name || "User"}!
+  <div className="h-full backdrop-blur-sm bg-white/10 border-r border-white/10 p-4 space-y-6 flex flex-col">
+    <div className="pt-10 lg:pt-4">
+      <h2 className="text-xl font-bold tracking-tight text-white">Dashboard</h2>
+      <p className="text-sm text-blue-100/80">
+        Welcome, {user?.name || "User"}!
+      </p>
+    </div>
+    
+    <div className="space-y-2 pt-4">
+      <h3 className="text-xs uppercase text-blue-100/60 font-medium px-2">Navigation</h3>
+      <button 
+        onClick={() => setActiveView("convert")}
+        className={`w-full text-left px-3 py-2 rounded-md flex items-center text-sm font-medium
+          ${activeView === "convert" 
+            ? "bg-white/20 text-white" 
+            : "text-blue-100/80 hover:bg-white/10"}`}
+      >
+        Convert
+      </button>
+      <button 
+        onClick={() => setActiveView("history")}
+        className={`w-full text-left px-3 py-2 rounded-md flex items-center text-sm font-medium
+          ${activeView === "history" 
+            ? "bg-white/20 text-white" 
+            : "text-blue-100/80 hover:bg-white/10"}`}
+      >
+        History
+      </button>
+    </div>
+    
+    <div className="space-y-2 pt-4">
+      <h3 className="text-xs uppercase text-blue-100/60 font-medium px-2">Quick Stats</h3>
+      <div className="p-3 space-y-3">
+        <div className="flex justify-between items-center">
+          <span className="text-blue-100/80 text-xs">Total</span>
+          <span className="text-sm font-bold text-white">{conversions.length}</span>
+        </div>
+        <div className="flex justify-between items-center">
+          <span className="text-blue-100/80 text-xs">Pending</span>
+          <span className="text-sm font-bold text-yellow-400">
+            {files.filter(f => f.status === "uploading").length}
+          </span>
+        </div>
+        <div className="flex justify-between items-center">
+          <span className="text-blue-100/80 text-xs">Completed</span>
+          <span className="text-sm font-bold text-green-400">
+            {files.filter(f => f.status === "success").length}
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    <div className="space-y-2 pt-4">
+      <h3 className="text-xs uppercase text-blue-100/60 font-medium px-2">Recent</h3>
+      <div className="p-2 space-y-2">
+        {conversions.length > 0 ? (
+          conversions.slice(0, 3).map((file) => (
+            <div key={file.id} className="p-2 rounded-md bg-white/5 hover:bg-white/10 transition-all cursor-pointer" onClick={() => handleFileView(file)}>
+              <p className="font-medium text-white text-xs truncate">{file.name}</p>
+              <p className="text-xs text-blue-100/70">
+                {new Date().toLocaleDateString()}
               </p>
             </div>
-            
-            <div className="space-y-2 pt-4">
-              <h3 className="text-xs uppercase text-blue-100/60 font-medium px-2">Navigation</h3>
-              <button 
-                onClick={() => setActiveView("convert")}
-                className={`w-full text-left px-3 py-2 rounded-md flex items-center text-sm font-medium
-                  ${activeView === "convert" 
-                    ? "bg-white/20 text-white" 
-                    : "text-blue-100/80 hover:bg-white/10"}`}
-              >
-                Convert
-              </button>
-              <button 
-                onClick={() => setActiveView("history")}
-                className={`w-full text-left px-3 py-2 rounded-md flex items-center text-sm font-medium
-                  ${activeView === "history" 
-                    ? "bg-white/20 text-white" 
-                    : "text-blue-100/80 hover:bg-white/10"}`}
-              >
-                History
-              </button>
-            </div>
-            
-            <div className="space-y-2 pt-4">
-              <h3 className="text-xs uppercase text-blue-100/60 font-medium px-2">Quick Stats</h3>
-              <div className="p-3 space-y-3">
-                <div className="flex justify-between items-center">
-                  <span className="text-blue-100/80 text-xs">Total</span>
-                  <span className="text-sm font-bold text-white">{conversions.length}</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-blue-100/80 text-xs">Pending</span>
-                  <span className="text-sm font-bold text-yellow-400">
-                    {files.filter(f => f.status === "uploading").length}
-                  </span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-blue-100/80 text-xs">Completed</span>
-                  <span className="text-sm font-bold text-green-400">
-                    {files.filter(f => f.status === "success").length}
-                  </span>
-                </div>
-              </div>
-            </div>
-            
-            <div className="space-y-2 pt-4">
-              <h3 className="text-xs uppercase text-blue-100/60 font-medium px-2">Recent</h3>
-              <div className="p-2 space-y-2">
-                {conversions.length > 0 ? (
-                  conversions.slice(0, 3).map((file) => (
-                    <div key={file.id} className="p-2 rounded-md bg-white/5 hover:bg-white/10 transition-all cursor-pointer" onClick={() => handleFileView(file)}>
-                      <p className="font-medium text-white text-xs truncate">{file.name}</p>
-                      <p className="text-xs text-blue-100/70">
-                        {new Date().toLocaleDateString()}
-                      </p>
-                    </div>
-                  ))
-                ) : (
-                  <p className="text-xs text-blue-100/70 px-2">No recent activity.</p>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
+          ))
+        ) : (
+          <p className="text-xs text-blue-100/70 px-2">No recent activity.</p>
+        )}
+      </div>
+    </div>
+    
+    {/* Added margin-top auto to push the logout section to the bottom */}
+    <div className="mt-auto pt-4 border-t border-white/10">
+      <button 
+        onClick={() => logout()} 
+        className="w-full text-left px-3 py-2 rounded-md flex items-center text-sm font-medium
+          text-red-300 hover:bg-white/10"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+        </svg>
+        Logout
+      </button>
+    </div>
+  </div>
+</div>
 
        
         <div className={`flex-1 transition-all duration-300 ${sidebarOpen ? 'lg:ml-35' : 'ml-0'}`}>

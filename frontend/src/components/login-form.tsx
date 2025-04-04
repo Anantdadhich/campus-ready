@@ -18,6 +18,9 @@ const loginSchema = z.object({
   password: z.string().min(8, { message: "Password must be at least 8 characters" }),
 });
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+
+
 export const LoginForm = () => {
   const router = useRouter();
   const {login}=useAuth()
@@ -36,7 +39,7 @@ export const LoginForm = () => {
     setIsLoading(true);
     try {
       await new Promise((resolve) => setTimeout(resolve, 1000));
-      const response = await axios.post("http://localhost:3001/api/auth/login", values);
+      const response = await axios.post(`${API_URL}/api/auth/login`, values);
 
       if (response.status === 200) {
         login(response.data.jwttoken)

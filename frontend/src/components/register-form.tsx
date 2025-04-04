@@ -24,6 +24,7 @@ const formSchema=z.object({
       path:["confirmpassword"]
 }  )
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
 
 
 export const Registerform = () => {
@@ -47,7 +48,7 @@ export const Registerform = () => {
         await new Promise((resolve)=>setTimeout(resolve,1000)) 
 
 
-        const response=await axios.post("http://localhost:3001/api/auth/register",values)
+        const response=await axios.post(`${API_URL}/api/auth/register`,values)
 
         if(response.status===200){
             toast({

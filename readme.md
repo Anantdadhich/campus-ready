@@ -1,16 +1,16 @@
-# PDF-to-XML Converter 
+# PDF-to-XML Converter (Campus ready Assingment)
 
-Welcome to **PDF-to-XML Converter**, a powerful full-stack web application that transforms your PDF files into structured XML with ease!.Built with a sleek Next.js frontend and a robust Node.js backend, it’s designed for seamless document conversion and a delightful user experience.
+Welcome to **Convo**, a powerful full-stack web application that transforms your PDF files into structured XML with ease!.Built with a  Next.js frontend and  Node.js backend, it’s designed for seamless document conversion and a delightful user experience.
 
 ##  Features
 
-- **Secure Authentication**: Log in or register with confidence using JSON Web Tokens (JWT) for secure access.
+- **Secure Authentication**: Log in or register with (JWT) for secure access.
 - **Effortless PDF Upload**: Drag-and-drop uploader with validation—10MB max, PDFs only!
-- **Conversion History**: Browse your past conversions, preview results, or delete them with a click.
-- **Real-Time Preview**: View your PDFs and their XML output side-by-side (conversion mocked for now, but ready to scale).
+- **Conversion History**: Browse your past conversions, preview results, or Downlaod them with a click.
+- **Real-Time Preview**: View your PDFs and their XML output side-by-side in history section.
 - **Responsive Design**: A stunning UI with a sidebar for desktop and a toggleable menu for mobile.
 - **Quick Stats Dashboard**: See your total, pending, and completed conversions at a glance.
-- **Backend Power**: Converts PDFs to XML, stores files, and tracks everything in a PostgreSQL database.
+- **Backend Power**: Converts PDFs to XML, stores files, and tracks everything in a PostgreSQL database with the help of Prisma ORM.
 
 ---
 
@@ -31,10 +31,31 @@ cd campus-ready
 
 ##  Project Structure
 ```plaintext
+
 campus-ready/
-├── backend/           # Node.js + Express backend
-├── frontend/          # Next.js frontend
-└── README.md          # You’re reading it!
+├── backend/               # Node.js + Express backend  
+│   ├── prisma/            # Database schema and migrations  
+│   │   └── schema.prisma  # Prisma schema file  
+│   ├── src/               # Source code  
+│       ├── conversion/    # PDF-to-XML conversion logic  
+│       ├── db/            # Database connection and queries  
+│       ├── middleware/    # Middleware functions  
+│       ├── config.ts      # Configuration settings  
+│       ├── index.ts       # Main server entry point  
+│       ├── storage.ts     # File storage logic    
+│   
+│  
+├── frontend/              # Next.js frontend   
+│   ├── node_modules/      # Installed dependencies  
+│   ├── public/            # Static assets  
+│   ├── src/               # Frontend source code  
+│   │   ├── app/           # Next.js app structure  
+│   │   ├── components/    # Reusable UI components  
+│   │   │   ├── ui/        # UI elements (buttons, inputs, etc.)  
+│   │   │  
+│       
+└── README.md              # You're reading it!  
+│── record.mov-            #Recording of Project
 ```
 
 ---
@@ -50,7 +71,6 @@ cd backend
 ```bash
 npm install
 ```
-Installs **express, multer, pdf-parse, xml2js, bcrypt, jsonwebtoken, cors, prisma,** and more.
 
 ### **3. Environment Variables**
 Create a `.env` file in `backend/`:
@@ -101,26 +121,13 @@ npm run dev
 ```
 ---
 
-##  Running Both Backend & Frontend
-Open two terminal windows:
-- **Backend**:
-  ```bash
-  cd backend && npx tsc - b 
-  node dist/index.js
-  ```
-- **Frontend**:
-  ```bash
-  cd frontend && npm run dev
-  ```
-  
----
-
 ##  Technology Choices
 
 ### **Frontend**
 - **Next.js**
 - **TypeScript**
-- **Shadcn UI**
+- **Shadcn UI Components**
+- **Axios**
 
 ### **Backend**
 - **Node.js**
@@ -131,6 +138,7 @@ Open two terminal windows:
 - **pdf-parse**
 - **xml2js**
 - **bcrypt & jsonwebtoken**
+- **Axios**
 
 ---
 
@@ -139,20 +147,23 @@ Open two terminal windows:
 This project hits **Level 2 (Intermediate)** with flair:
 - **JWT Authentication**: Secure login/register via `useAuth` and token-based API calls.
 - **PDF-to-XML Conversion**: Fully implemented in the backend with `pdfprocess`, though preview is mocked in the frontend.
-- **History Management**: Fetches and displays conversions with view/delete options.
-- **UI Features**: Sidebar navigation, responsive design, and a stats dashboard.
-
+- **History Management**: Fetches and displays conversions with view/delete options and download the files easily in your machine.
+- **UI Features**: Sidebar navigation and a stats dashboard.
+- **User Profile**:User can login and logout easily.
 ---
 
-##  Assumptions and Limitations
+## Approach 
+ - My approach to building this application was simple:
 
-### **Assumptions**
-- PDFs are text-based (no complex layouts like tables or images yet).
-- Users are authenticated via JWT tokens from `/api/auth/login`.
-- Local filesystem (`uploads/`) is available for storage.
+ 1 Database Setup: I used Prisma ORM to connect to the database easily with JavaScript and handle migrations smoothly.
+
+ 2 Backend Development: I started by creating basic routes and added JWT middleware for authentication. Then, using Multer and other libraries, I built routes for uploading and downloading converted files.
+
+ 3 Frontend Development: I chose Next.js because of its file-based routing and easy deployment. For the UI, I used shadcn/ui to create components and added designs to make the interface clean and user-friendly.
+
+
 
 ### **Limitations**
-- **Preview**: Frontend shows mocked XML; real previews need integration with backend XML files.
 - **PDF Complexity**: Only handles basic text extraction, not advanced structures.
 - **Error Feedback**: Basic error messages;
 
@@ -168,4 +179,11 @@ This project hits **Level 2 (Intermediate)** with flair:
 
 ---
 
+## Screenshots
+  
 
+
+ ![alt text](image.png)
+ ![alt text](record.mov)
+
+--- 

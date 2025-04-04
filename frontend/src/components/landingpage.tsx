@@ -47,7 +47,7 @@ export function LandingPage() {
           <div className="flex items-center justify-between">
             <div className="flex items-center">
               <div className="text-xl font-bold text-white md:text-2xl group">
-                <span className="bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent">Convo</span>
+                <Link className="bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent" href="/">Convo</Link>
                 <div className="h-0.5 w-0 bg-gradient-to-r from-green-400 to-blue-400 transition-all duration-300 group-hover:w-full"></div>
               </div>
               
